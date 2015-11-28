@@ -6,7 +6,7 @@
 Summary:	Simple module to parse ISO 8601 dates
 Name:		python-%{module}
 Version:	0.1.8
-Release:	1
+Release:	2
 License:	MIT
 Group:		Development/Languages
 Source0:	http://pypi.python.org/packages/source/i/iso8601/%{module}-%{version}.tar.gz
