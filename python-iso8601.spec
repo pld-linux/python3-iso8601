@@ -14,7 +14,7 @@ Source0:	http://pypi.python.org/packages/source/i/iso8601/%{module}-%{version}.t
 URL:		https://bitbucket.org/micktwomey/pyiso8601
 BuildRequires:	python-devel
 BuildRequires:	python-setuptools
-BuildRequires:	rpmbuild(macros) >= 1.219
+BuildRequires:	rpmbuild(macros) >= 1.710
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
