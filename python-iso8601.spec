@@ -12,7 +12,7 @@ Version:	0.1.12
 Release:	2
 License:	MIT
 Group:		Development/Languages/Python
-#Source0Download: https://pypi.python.org/simple/iso8601/
+#Source0Download: https://pypi.org/simple/iso8601/
 Source0:	https://files.pythonhosted.org/packages/source/i/iso8601/%{module}-%{version}.tar.gz
 # Source0-md5:	4de940f691c5ea759fb254384c8ddcf6
 URL:		https://bitbucket.org/micktwomey/pyiso8601
