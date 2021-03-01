@@ -9,7 +9,7 @@ Summary:	Simple module to parse ISO 8601 dates
 Summary(pl.UTF-8):	Prosty moduł do analizy dat ISO 8601
 Name:		python-%{module}
 Version:	0.1.12
-Release:	4
+Release:	5
 License:	MIT
 Group:		Development/Languages/Python
 #Source0Download: https://pypi.org/simple/iso8601/
