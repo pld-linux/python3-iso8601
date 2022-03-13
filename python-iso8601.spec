@@ -1,6 +1,7 @@
 #
 # Conditional build:
-%bcond_without	tests	# do not perform "make test"
+%bcond_without	doc	# Sphinx documentation
+%bcond_without	tests	# unit tests
 %bcond_without	python2 # CPython 2.x module
 %bcond_without	python3 # CPython 3.x module
 
@@ -8,25 +9,29 @@
 Summary:	Simple module to parse ISO 8601 dates
 Summary(pl.UTF-8):	Prosty moduł do analizy dat ISO 8601
 Name:		python-%{module}
-Version:	0.1.12
-Release:	5
+# keep 0.x here for python2 support
+Version:	0.1.16
+Release:	1
 License:	MIT
 Group:		Development/Languages/Python
 #Source0Download: https://pypi.org/simple/iso8601/
 Source0:	https://files.pythonhosted.org/packages/source/i/iso8601/%{module}-%{version}.tar.gz
-# Source0-md5:	4de940f691c5ea759fb254384c8ddcf6
+# Source0-md5:	ffe057a29bbc9defec7fdcf75ce6e25f
 URL:		https://bitbucket.org/micktwomey/pyiso8601
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
 %if %{with python2}
 BuildRequires:	python-devel >= 1:2.6
-%{?with_tests:BuildRequires:	python-pytest}
+%{?with_tests:BuildRequires:	python-pytest >= 2.4.2}
 BuildRequires:	python-setuptools
 %endif
 %if %{with python3}
 BuildRequires:	python3-devel >= 1:3.2
-%{?with_tests:BuildRequires:	python3-pytest}
+%{?with_tests:BuildRequires:	python3-pytest >= 2.4.2}
 BuildRequires:	python3-setuptools
+%endif
+%if %{with doc}
+BuildRequires:	sphinx-pdg-2 >= 1.2.1
 %endif
 Requires:	python-modules >= 1:2.6
 BuildArch:	noarch
@@ -56,6 +61,17 @@ Ten moduł analizuje najbardziej popularne postaci łańcuchów dat ISO
 8601 (np. 2007-01-14T20:34:22+00:00) i przekształca na obiekty
 datetime.
 
+%package apidocs
+Summary:	API documentation for Python iso8601 module
+Summary(pl.UTF-8):	Dokumentacja API modułu Pythona iso8601
+Group:		Documentation
+
+%description apidocs
+API documentation for Python iso8601 module.
+
+%description apidocs -l pl.UTF-8
+Dokumentacja API modułu Pythona iso8601.
+
 %prep
 %setup -qn %{module}-%{version}
 
@@ -64,7 +80,7 @@ datetime.
 %py_build
 
 %if %{with tests}
-%{__python} -mpytest iso8601/test_iso8601.py
+%{__python} -m pytest iso8601/test_iso8601.py
 %endif
 %endif
 
@@ -72,8 +88,13 @@ datetime.
 %py3_build
 
 %if %{with tests}
-%{__python} -mpytest iso8601/test_iso8601.py
+%{__python3} -m pytest iso8601/test_iso8601.py
 %endif
+%endif
+
+%if %{with doc}
+%{__make} -C docs html \
+	SPHINXBUILD=sphinx-build-2
 %endif
 
 %install
@@ -109,4 +130,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENSE README.rst
 %{py3_sitescriptdir}/iso8601
 %{py3_sitescriptdir}/iso8601-%{version}-py*.egg-info
+%endif
+
+%if %{with doc}
+%files apidocs
+%defattr(644,root,root,755)
+%doc docs/_build/html/{_modules,_static,*.html,*.js}
 %endif
