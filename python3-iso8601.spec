@@ -7,17 +7,22 @@
 Summary:	Simple module to parse ISO 8601 dates
 Summary(pl.UTF-8):	Prosty moduł do analizy dat ISO 8601
 Name:		python3-%{module}
-Version:	1.0.2
-Release:	5
+Version:	2.1.0
+Release:	1
 License:	MIT
 Group:		Development/Languages/Python
 #Source0Download: https://pypi.org/simple/iso8601/
 Source0:	https://files.pythonhosted.org/packages/source/i/iso8601/%{module}-%{version}.tar.gz
-# Source0-md5:	51e301556c344ca8a7a27d83eef771ec
+# Source0-md5:	6e33910eba87066b3be7fcf3d59d16b5
 URL:		https://bitbucket.org/micktwomey/pyiso8601
+BuildRequires:	python3-build
 BuildRequires:	python3-devel >= 1:3.6.2
-%{?with_tests:BuildRequires:	python3-pytest >= 6.2.2}
-BuildRequires:	python3-setuptools
+BuildRequires:	python3-installer
+BuildRequires:	python3-poetry-core
+%if %{with tests}
+BuildRequires:	python3-pytest >= 6.2.2
+BuildRequires:	python3-pytz
+%endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
 %if %{with doc}
@@ -51,10 +56,14 @@ Dokumentacja API modułu Pythona iso8601.
 %setup -qn %{module}-%{version}
 
 %build
-%py3_build
+%py3_build_pyproject
 
 %if %{with tests}
-%{__python3} -m pytest iso8601/test_iso8601.py
+%{__python3} -m zipfile -e build-3/*.whl build-3-test
+# use explicit plugins list for reliable builds (delete PYTEST_PLUGINS if empty)
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
+PYTEST_PLUGINS= \
+%{__python3} -m pytest -o pythonpath="$PWD/build-3-test" iso8601/test_iso8601.py
 %endif
 
 %if %{with doc}
@@ -65,7 +74,7 @@ Dokumentacja API modułu Pythona iso8601.
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%py3_install
+%py3_install_pyproject
 
 %{__rm} $RPM_BUILD_ROOT%{py3_sitescriptdir}/iso8601/test_*
 
@@ -76,7 +85,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc LICENSE README.rst
 %{py3_sitescriptdir}/iso8601
-%{py3_sitescriptdir}/iso8601-%{version}-py*.egg-info
+%{py3_sitescriptdir}/iso8601-%{version}.dist-info
 
 %if %{with doc}
 %files apidocs
